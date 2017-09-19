@@ -1,4 +1,4 @@
-#This code is written by Abhishek Bhagwat. Please give credits to the author if this repository is cloned. Find this author on GitHub : github.com/hyperviper13
+#This code is written by Abhishek Bhagwat. Please give credits to the author if this repository is cloned. Find this author on GitHub : github.com/Abhishekbhagwat
 
 #Eve : The Event Bot
 
