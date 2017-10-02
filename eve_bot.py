@@ -68,7 +68,11 @@ class EveBot(telepot.helper.ChatHandler):
                 bot.sendMessage(chat_id, response)
 
                 if (msg_text == 'Technology'):
-                    database_events = database['database_events_tech']
+                    database_events = database['database_events_tech'][0]
+					
+					# Alternative code (try this if the current code doesn't work)
+					# intermediate_step = database['database_events_tech']
+					# database_events = intermediate_step[0]
                 elif (msg_text == 'Culture'):
                     database_events = database['database_events_culture']
                 elif (msg_text == 'Music'):
