@@ -7,7 +7,7 @@ from telepot import DelegatorBot
 from telepot.delegate import pave_event_space, per_chat_id, create_open
 from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton
 
-with open('.\TOKEN.txt', 'r') as token_file:
+with open('TOKEN.txt', 'r') as token_file:
     TOKEN = token_file.read()
 
 #A user access token from Facebook Developer page : developers.facebook.com
