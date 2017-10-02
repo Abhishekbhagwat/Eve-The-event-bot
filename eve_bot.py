@@ -87,11 +87,11 @@ class EveBot(telepot.helper.ChatHandler):
                     # API call is made to search for events in the list database_events_tech
                     events = graph.search(type='event',q=[database_events])
 
-                for event in events['data']:
-                    #Result obtained is stored in a list
-                    response = (event['name'] + event['description'])
-                    print ('event_id: ', event['id'])
-                    bot.sendMessage(chat_id, response)
+                    for event in events['data']:
+                        #Result obtained is stored in a list
+                        response = (event['name'] + event['description'])
+                        print ('event_id: ', event['id'])
+                        bot.sendMessage(chat_id, response)
 
             else:
                 # response = 'Please choose an event category!'
