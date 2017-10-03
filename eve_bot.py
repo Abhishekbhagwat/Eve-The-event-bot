@@ -82,16 +82,16 @@ class EveBot(telepot.helper.ChatHandler):
                 else:
                     # maybe implement something later on - but this should never be run since the outer if already limits the inputs
                     pass
-
-                for i in range (len(database_events)):                               # for loop used to parse over the elements of the list
+                i=0
+                while i <= len(database_events):                               # while loop used to parse over the elements of the list
                     # API call is made to search for events in the list database_events_tech
-                    events = graph.search(type='event',q=[database_events])
-
-                for event in events['data']:
+                    events = graph.search(type='event',q=[database_events[i]])
+                    i+=1
+                    for event in events['data']:
                     #Result obtained is stored in a list
-                    response = (event['name'] + event['description'])
-                    print ('event_id: ', event['id'])
-                    bot.sendMessage(chat_id, response)
+                        response = (event['name'] + event['description'])
+                        print ('event_id: ', event['id'])
+                        bot.sendMessage(chat_id, response)
 
             else:
                 # response = 'Please choose an event category!'
