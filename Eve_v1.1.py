@@ -29,7 +29,6 @@ graph = facebook.GraphAPI(access_token="EAABpaWOJYT8BALCrZBXNm6ZAGYZBPiJ7qxpEnMY
 CHOOSE_EVENT_CATEGORY = 0
 CHOSEN_EVENT_CATEGORY = 1
 
-
 class EveBot(telepot.helper.ChatHandler):
 
     def __init__(self, *args, **kwargs):
@@ -42,8 +41,8 @@ class EveBot(telepot.helper.ChatHandler):
         content_type, chat_type, chat_id = telepot.glance(msg)
 
         # default response 
-        response = '''Hi!! I\'m Eve, the event bot. I will show you the most happening events at NTU from your favorite clubs
-                      Please enter /events to display the categories of the events. '''
+        response = 'Hi!! I\'m Eve, the event bot. I will show you the most happening events at NTU from your favorite clubs'
+        bot.sendMessage(chat_id,response)
 
         # handle only messages with text content
         if content_type == 'text':
@@ -68,44 +67,57 @@ class EveBot(telepot.helper.ChatHandler):
                         [KeyboardButton(text=event_category)] for event_category in event_categories
                     ] + [[KeyboardButton(text='Nevermind')]])
 
-                    response = 'Please selecct the category from which you would like to see events.'
+                    response1 = 'Please select the category from which you would like to see events.'
                     bot.sendMessage(chat_id, response, reply_markup=event_categories_keyboard)
                     self.state == CHOSEN_EVENT_CATEGORY
                     # this somehow stops the bot from sending the response twice
                     return
 
-   
-            if (msg_text == 'Technology'):
-                database_events = database['database_events_tech']
-            elif (msg_text == 'Culture'):
-                database_events = database['database_events_culture']
-            elif (msg_text == 'Music'):
-                database_events = database['database_events_music']
-            elif (msg_text == 'Dance'):
-                database_events = database['database_events_dance']
-            elif (msg_text == 'Sports'):
-                database_events = database['database_events_sports']
-            elif (msg_text == 'Miscellaneous'):
-                database_events = database['database_events_misc']
-    
-            
-            for i in range(len(database_events)):        # for loop used to parse over the elements of the list
-                    
-                 # API call is made to search for events in the list database_events_tech
 
-                events = graph.search(type='event',q=[database_events[i]])
-                for event in events['data']:
+                if (command=="start"):
+
+                    bot.sendMessage(chat_id, "Enter the message /events to start")
+                    msg_text = msg['text']
+                    self.state == CHOSEN_EVENT_CATEGORY
+                        
+
+
+            elif (msg_text == 'Technology' or 'Culture' or 'Music' or 'Dance' or 'Sports' or 'Miscellaneous'):
+                response = ('Your choice was ' + msg_text)
+                bot.sendMessage(chat_id, response)
+
+                if (msg_text == 'Technology'):
+                    database_events = database['database_events_tech']
+                elif (msg_text == 'Culture'):
+                    database_events = database['database_events_culture']
+                elif (msg_text == 'Music'):
+                    database_events = database['database_events_music']
+                elif (msg_text == 'Dance'):
+                    database_events = database['database_events_dance']
+                elif (msg_text == 'Sports'):
+                    database_events = database['database_events_sports']
+                elif (msg_text == 'Miscellaneous'):
+                    database_events = database['database_events_misc']
+                else:
+                    # maybe implement something later on - but this should never be run since the outer if already limits the inputs
+                    pass
+                
+                for i in database_events:                               # while loop used to parse over the elements of the list
+                    # API call is made to search for events in the list database_events_tech
+                    events = graph.search(type='event',q=[i],limit = 1)
+                   
+                    for event in events['data']:
                     #Result obtained is stored in a list
-                    response = (event['name'] + event['description'])
-                    print ('event_id: ', event['id'])
-                    bot.sendMessage(chat_id, response)
+                        response = (event['name'] + event['description'])
+                        print ('event_id: ', event['id'])
+                        bot.sendMessage(chat_id, response)
 
-        else:
+            else:
                 # response = 'Please choose an event category!'
-            pass
+                pass
 
         # send the response
-        bot.sendMessage(chat_id, response)
+        #bot.sendMessage(chat_id, response)
 
 
     def on_callback_query(msg):
