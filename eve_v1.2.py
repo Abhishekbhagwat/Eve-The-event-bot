@@ -42,21 +42,36 @@ class EveBot(telepot.helper.ChatHandler):
 
                 # parse the command excluding the '/' (from TGIF)
                 command = msg_text[1:].lower()
-                
-                if (command=="start"):
-                            
 
-                # default response 
+                if (command=="start"):
+
+
+                # default response
                     response = 'Hi!! I\'m Eve, the event bot. I will show you the most happening events at NTU from your favorite clubs'
                     bot.sendMessage(chat_id,response)
-    
+
                     bot.sendMessage(chat_id, "Enter the message /events to start")
                     msg_text = msg['text']
                     self.state == CHOSEN_EVENT_CATEGORY
-                        
+
+                # allows user to search for a particular event by name, utilizes Facebook's search function
+                elif (command.startswith('search')):
+                        search_input = msg_text[7:].lower()
+                        bot.sendMessage(chat_id, 'You searched for: ' + search_input)
+
+                        print('User searched for ', search_input)
+
+                        events = graph.search(type='event',q=[search_input],limit = 1)
+                        for event in events['data']:
+                        #Result obtained is stored in a list
+                            response = (event['name'] + event['description'])
+                            print ('event_id: ', event['id'])
+                            bot.sendMessage(chat_id, response)
+                        if events['data'] == []:
+                            bot.sendMessage(chat_id, 'No results found.')
 
                 # interpret the commands and provide response accordingly
-                if (self.state == CHOOSE_EVENT_CATEGORY and command == 'events'):
+                elif (self.state == CHOOSE_EVENT_CATEGORY and command == 'events'):
 
                     # get available event categories
                     event_categories = ('Technology', 'Culture', 'Music', 'Dance', 'Sports', 'Miscellaneous')
@@ -72,8 +87,11 @@ class EveBot(telepot.helper.ChatHandler):
                     # this somehow stops the bot from sending the response twice
                     return
 
+                else:
+                    bot.sendMessage(chat_id, 'That is not a valid command!')
 
-            elif (msg_text == 'Technology' or 'Culture' or 'Music' or 'Dance' or 'Sports' or 'Miscellaneous'):
+
+            elif (msg_text in ('Technology', 'Culture', 'Music', 'Dance', 'Sports', 'Miscellaneous')):
                 response = ('Your choice was ' + msg_text)
                 bot.sendMessage(chat_id, response)
 
@@ -92,11 +110,11 @@ class EveBot(telepot.helper.ChatHandler):
                 else:
                     # maybe implement something later on - but this should never be run since the outer if already limits the inputs
                     pass
-                
+
                 for i in database_events:                               # while loop used to parse over the elements of the list
                     # API call is made to search for events in the list database_events_tech
                     events = graph.search(type='event',q=[i],limit = 1)
-                   
+
                     for event in events['data']:
                     #Result obtained is stored in a list
                         response = (event['name'] + event['description'])
@@ -105,8 +123,10 @@ class EveBot(telepot.helper.ChatHandler):
 
             else:
                 # response = 'Please choose an event category!'
-                pass
+                bot.sendMessage(chat_id, 'What do you mean?')
 
+        else:
+            bot.sendMessage(chat_id, 'I am a text bot! Only text inputs are accepted!')
         # send the response
         #bot.sendMessage(chat_id, response)
 
